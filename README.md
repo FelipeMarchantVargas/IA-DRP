@@ -28,7 +28,7 @@ El programa permite especificar un número máximo de iteraciones para el recoci
    git clone https://github.com/FelipeMarchantVargas/IA-DRP.git
    cd IA-DRP
    ```
-2. Compila el código usando g++ y el Makefile:
+2. Compila el código usando "g++" y el Makefile:
    ```bash
    make
    ```
