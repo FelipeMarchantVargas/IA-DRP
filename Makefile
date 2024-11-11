@@ -1,10 +1,10 @@
-all: proyecto
+all: entrega1
 
-proyecto: proyecto.cpp
-	g++ proyecto.cpp -o proyecto
+entrega1: entrega1.cpp
+	g++ entrega1.cpp -o entrega1
 
 run:
-	./proyecto
+	./entrega1
 
 clean:
-	rm -f proyecto
+	rm -f entrega1
