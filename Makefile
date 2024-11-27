@@ -1,10 +1,10 @@
-all: entrega1
+all: entrega2
 
-entrega1: entrega1.cpp
-	g++ entrega1.cpp -o entrega1
+entrega2: entrega2.cpp
+	g++ entrega2.cpp -o entrega2
 
 run:
-	./entrega1
+	./entrega2
 
 clean:
-	rm -f entrega1
+	rm -f entrega2
