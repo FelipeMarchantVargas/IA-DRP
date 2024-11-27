@@ -6,30 +6,66 @@
 #include <chrono>
 #include <algorithm>
 
+/**
+ * @struct AED
+ * Representa un desfibrilador externo automático (AED).
+ * @param x Coordenada x del AED.
+ * @param y Coordenada y del AED.
+ * @param is_new Indica si el AED fue recién instalado (true) o si ya estaba en el sistema (false).
+ */
 struct AED {
     int x, y;
     bool is_new;
 };
 
+/**
+ * @struct Event
+ * Representa un evento de paro cardíaco súbito (OHCA).
+ * @param x Coordenada x del evento.
+ * @param y Coordenada y del evento.
+ * @param has_aed Indica si el evento ya tiene un AED cercano (true) o no (false).
+ */
 struct Event {
     int x, y;
     bool has_aed;
 };
 
+/**
+ * @struct Instance
+ * Contiene los datos principales de una instancia del problema.
+ * @param n Número de eventos OHCA.
+ * @param p Presupuesto disponible para instalar nuevos AEDs.
+ * @param R Radio de cobertura de un AED.
+ * @param events Vector que almacena todos los eventos.
+ * @param aeds Vector que almacena todos los AEDs instalados.
+ */
 struct Instance {
-    int n; // Número de eventos OHCA
-    float p; // Presupuesto
-    int R; // Radio de cobertura
-    std::vector<Event> events; // Vector de eventos
-    std::vector<AED> aeds; // Vector de AEDs instalados
+    int n;
+    float p;
+    int R;
+    std::vector<Event> events;
+    std::vector<AED> aeds;
 };
 
-// Función para calcular la distancia entre dos puntos
+/**
+ * Calcula la distancia euclidiana entre dos puntos.
+ * @param x1 Coordenada x del primer punto.
+ * @param y1 Coordenada y del primer punto.
+ * @param x2 Coordenada x del segundo punto.
+ * @param y2 Coordenada y del segundo punto.
+ * @return Distancia euclidiana entre los dos puntos.
+ */
 double distance(int x1, int y1, int x2, int y2) {
     return sqrt(pow(x2 - x1, 2) + pow(y2 - y1, 2));
 }
 
-// Función para contar eventos cubiertos
+/**
+ * Cuenta la cantidad de eventos que están cubiertos por al menos un AED.
+ * @param events Vector de eventos OHCA.
+ * @param aeds Vector de AEDs instalados.
+ * @param R Radio de cobertura de los AEDs.
+ * @return Número de eventos cubiertos.
+ */
 int count_covered_events(const std::vector<Event>& events, const std::vector<AED>& aeds, int R) {
     int covered = 0;
     for (const auto& event : events) {
@@ -43,7 +79,10 @@ int count_covered_events(const std::vector<Event>& events, const std::vector<AED
     return covered;
 }
 
-// Leer instancia desde entrada
+/**
+ * Lee los datos de una instancia desde la entrada estándar.
+ * @return Una instancia con los datos leídos.
+ */
 Instance read_instance() {
     Instance instance;
     std::cin >> instance.n >> instance.p >> instance.R;
@@ -56,7 +95,12 @@ Instance read_instance() {
     return instance;
 }
 
-// Generar solución inicial con Greedy
+/**
+ * Genera una solución inicial utilizando un enfoque greedy.
+ * Se instalan los AEDs en los eventos que cubran la mayor cantidad de otros eventos
+ * dentro del radio de cobertura, respetando el presupuesto.
+ * @param instance Referencia a la instancia del problema.
+ */
 void greedy_solution(Instance& instance) {
     while (instance.p >= 1.0) {
         int best_x = 0, best_y = 0, max_cover = 0;
@@ -91,7 +135,14 @@ void greedy_solution(Instance& instance) {
     }
 }
 
-// Función para aplicar Simulated Annealing
+/**
+ * Aplica el algoritmo de Simulated Annealing para optimizar la distribución de los AEDs.
+ * @param instance Referencia a la instancia del problema.
+ * @param max_iterations Número máximo de iteraciones permitidas.
+ * @param initial_temp Temperatura inicial del algoritmo.
+ * @param final_temp Temperatura final mínima para detener el algoritmo.
+ * @param cooling_factor Factor de enfriamiento para reducir la temperatura.
+ */
 void simulated_annealing(Instance& instance, int max_iterations, double initial_temp, double final_temp, double cooling_factor) {
     auto start_time = std::chrono::high_resolution_clock::now();
 
@@ -160,6 +211,13 @@ void simulated_annealing(Instance& instance, int max_iterations, double initial_
     out.close();
 }
 
+/**
+ * Punto de entrada principal del programa.
+ * Permite configurar parámetros opcionales para el algoritmo desde la línea de comandos.
+ * @param argc Número de argumentos pasados al programa.
+ * @param argv Arreglo de argumentos (máximo 4: iteraciones, temperatura inicial, final y factor de enfriamiento).
+ * @return Código de salida del programa (0 si todo salió correctamente).
+ */
 int main(int argc, char* argv[]) {
     // Valores por defecto
     int max_iterations = 5000;
