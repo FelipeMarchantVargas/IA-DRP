@@ -92,7 +92,7 @@ void greedy_solution(Instance& instance) {
 }
 
 // Función para aplicar Simulated Annealing
-void simulated_annealing(Instance& instance, int max_iterations, double initial_temp, double final_temp) {
+void simulated_annealing(Instance& instance, int max_iterations, double initial_temp, double final_temp, double cooling_factor) {
     auto start_time = std::chrono::high_resolution_clock::now();
 
     std::vector<AED> current_solution = instance.aeds;
@@ -137,7 +137,7 @@ void simulated_annealing(Instance& instance, int max_iterations, double initial_
         }
 
         // Enfriar la temperatura
-        temp *= 0.95; // Factor de enfriamiento
+        temp *= cooling_factor; // Factor de enfriamiento
     }
 
     auto end_time = std::chrono::high_resolution_clock::now();
@@ -165,11 +165,13 @@ int main(int argc, char* argv[]) {
     int max_iterations = 5000;
     double initial_temp = 1000.0;
     double final_temp = 1.0;
+    double cooling_factor = 0.95;
 
     // Leer argumentos opcionales
-    if (argc >= 2) max_iterations = std::atoi(argv[1]);
-    if (argc >= 3) initial_temp = std::atof(argv[2]);
-    if (argc >= 4) final_temp = std::atof(argv[3]);
+    if (argc >= 5) max_iterations = std::atoi(argv[1]);
+    if (argc >= 5) initial_temp = std::atof(argv[2]);
+    if (argc >= 5) final_temp = std::atof(argv[3]);
+    if (argc >= 5) cooling_factor = std::atof(argv[4]);
 
     // Leer instancia
     Instance instance = read_instance();
@@ -178,7 +180,7 @@ int main(int argc, char* argv[]) {
     greedy_solution(instance);
 
     // Optimizar con Simulated Annealing
-    simulated_annealing(instance, max_iterations, initial_temp, final_temp);
+    simulated_annealing(instance, max_iterations, initial_temp, final_temp, cooling_factor);
 
     return 0;
 }
